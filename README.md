@@ -21,6 +21,11 @@ An implementation of file tree for [Dear ImGui](https://github.com/ocornut/imgui
 - Nerd Font
 - C++14 or later
 
+> [!IMPORTANT]
+> Platform compatibility:
+> - Windows: main target, code tested.
+> - Unix-like OS: Basic support added, testing required.
+
 # Integration
 1) Set up an [Dear ImGui](https://github.com/ocornut/imgui) environment in your project.
 2) Add files 'imfiletree.h', 'imfiletree_internal.h', 'imfiletree_colorschemes.h', 'imfiletree.cpp', 'imfiletree_colorschemes.cpp' and directory 'misc' with all its contents to your sources.
@@ -59,3 +64,6 @@ if(ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowF
 ImGui::End();
 ImGui::PopStyleVar();
 ```
+
+# License
+This work is licensed under the terms of the MIT license. For a copy, see <https://opensource.org/licenses/MIT>.
