@@ -17,8 +17,8 @@ An implementation of file tree for [Dear ImGui](https://github.com/ocornut/imgui
 <img width="675" height="577" alt="imfiletree_popup_doalog" src="https://github.com/user-attachments/assets/e2d1ac27-33ce-4e25-bb75-fcde43ff5808" />
 
 # Dependencies
-- Vanilla ImGui 1.92+
-- Nerd Font
+- Vanilla [Dear ImGui](https://github.com/ocornut/imgui) >= 1.92
+- [A Patched Nerd Font](https://www.nerdfonts.com/) >= 3.3
 - C++14 or later
 
 > [!IMPORTANT]
@@ -59,11 +59,8 @@ ImFileTree::AddRootPath("C:\\path_to_dir_two");
 9) Render file tree inside application main loop:
 ```cpp
 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2.0f, 2.0f));
-if(ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_HorizontalScrollbar))
+if(ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
     ImFileTree::Render();
 ImGui::End();
 ImGui::PopStyleVar();
 ```
-
-# License
-This work is licensed under the terms of the MIT license. For a copy, see <https://opensource.org/licenses/MIT>.
