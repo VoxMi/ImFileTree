@@ -64,3 +64,6 @@ if(ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_HorizontalScrollbar))
 ImGui::End();
 ImGui::PopStyleVar();
 ```
+
+## License
+This work is licensed under the terms of the MIT license. For a copy, see <https://opensource.org/licenses/MIT>.
