@@ -13,6 +13,9 @@ An implementation of file tree for [Dear ImGui](https://github.com/ocornut/imgui
 - Drag-And-Drop feature
 - Colored icons for directories and file types
 
+<img width="675" height="577" alt="imfiletree_popup_menu" src="https://github.com/user-attachments/assets/3602c3c2-3d1e-4bcb-b002-c45459684219" />
+<img width="675" height="577" alt="imfiletree_popup_doalog" src="https://github.com/user-attachments/assets/e2d1ac27-33ce-4e25-bb75-fcde43ff5808" />
+
 # Dependencies
 - Vanilla ImGui 1.92+
 - Nerd Font
@@ -36,12 +39,19 @@ ImFileTree::CreateContext();
 ImFileTree::DestroyContext();
 ImGui::DestroyContext();
 ```
-7) Add one or more different root directories (recommended to be called once before the main rendering loop):
+7) Setup callbacks:
+```cpp
+ImFileTreeContext& gft = *ImFileTree::GetCurrentContext();
+gft.FileOpenCallback = YourFunctionFileOpen;
+gft.FileCloseCallback = YourFunctionFileClose;
+gft.FileRenameCallback = YourFunctionFileRename;
+```
+8) Add one or more different root directories (recommended to be called once before the main rendering loop):
 ```cpp
 ImFileTree::AddRootPath("C:\\path_to_dir_one");
 ImFileTree::AddRootPath("C:\\path_to_dir_two");
 ```
-8) Render file tree inside application main loop:
+9) Render file tree inside application main loop:
 ```cpp
 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2.0f, 2.0f));
 if(ImGui::Begin("Workspace", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_HorizontalScrollbar))
