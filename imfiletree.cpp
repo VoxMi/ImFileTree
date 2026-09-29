@@ -20,6 +20,10 @@
 #define ROOT_PATH_DEFAULT   "./"
 #endif
 
+#ifndef GImFileTree
+ImFileTreeContext* GImFileTree = nullptr;
+#endif
+
 //-----------------------------------------------------------------------------
 // [SECTION] Misc Helpers/Utilities
 //-----------------------------------------------------------------------------
@@ -753,23 +757,26 @@ void ImFileTree::RenderDir(ImFileTreeDirEntry* dir_entry)
         if(!ImGui::IsAnyMouseDown() && ImGui::IsItemHovered(ImGuiHoveredFlags_NoSharedDelay | ImGuiHoveredFlags_DelayNormal))
             ImGui::SetTooltip("%s", dir_path);
 
-        if(gft.Selections.GetSingle() == dir_entry->PathIndex)
+        if(ImGui::IsWindowFocused())
         {
-            if(ImGui::IsKeyPressed(ImGuiKey_F2))
-                gft.ActionQueue.Type = ImFileTreeActionType_Rename;
+            if(gft.Selections.GetSingle() == dir_entry->PathIndex)
+            {
+                if(ImGui::IsKeyPressed(ImGuiKey_F2))
+                    gft.ActionQueue.Type = ImFileTreeActionType_Rename;
+            }
+
+            if(ImGui::IsKeyPressed(ImGuiKey_Delete))
+                gft.ActionQueue.Type = ImFileTreeActionType_Delete;
+
+            if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
+                gft.ActionQueue.Type = ImFileTreeActionType_Copy;
+
+            if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_X))
+                gft.ActionQueue.Type = ImFileTreeActionType_Cut;
+
+            if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_V))
+                gft.ActionQueue.Type = ImFileTreeActionType_Paste;
         }
-
-        if(ImGui::IsKeyPressed(ImGuiKey_Delete))
-            gft.ActionQueue.Type = ImFileTreeActionType_Delete;
-
-        if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
-            gft.ActionQueue.Type = ImFileTreeActionType_Copy;
-
-        if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_X))
-            gft.ActionQueue.Type = ImFileTreeActionType_Cut;
-
-        if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_V))
-            gft.ActionQueue.Type = ImFileTreeActionType_Paste;
 
         if(gft.ActionQueue.Type == ImFileTreeActionType_Rename)
         {
@@ -1012,20 +1019,27 @@ void ImFileTree::RenderFile(ImFileTreeFileDesc* file_desc)
         if(!ImGui::IsAnyMouseDown() && ImGui::IsItemHovered(ImGuiHoveredFlags_NoSharedDelay | ImGuiHoveredFlags_DelayNormal))
             ImGui::SetTooltip("%s", gft.StringPool->at(file_desc->PathIndex));
 
-        if(gft.Selections.GetSingle() == file_desc->PathIndex)
+        if(ImGui::IsWindowFocused())
         {
-            if(ImGui::IsKeyPressed(ImGuiKey_F2))
-                gft.ActionQueue.Type = ImFileTreeActionType_Rename;
+            if(gft.Selections.GetSingle() == file_desc->PathIndex)
+            {
+                if(ImGui::IsKeyPressed(ImGuiKey_F2))
+                    gft.ActionQueue.Type = ImFileTreeActionType_Rename;
+            }
+
+            if(ImGui::IsKeyPressed(ImGuiKey_Delete))
+                gft.ActionQueue.Type = ImFileTreeActionType_Delete;
+
+            if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
+                gft.ActionQueue.Type = ImFileTreeActionType_Copy;
+
+            if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_X))
+                gft.ActionQueue.Type = ImFileTreeActionType_Cut;
+
+            if(ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_Space) || (is_double_click && ImGui::IsItemClicked(ImGuiMouseButton_Left)))
+                gft.ActionQueue.Type = ImFileTreeActionType_OpenFile;
         }
 
-        if(ImGui::IsKeyPressed(ImGuiKey_Delete))
-            gft.ActionQueue.Type = ImFileTreeActionType_Delete;
-
-        if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
-            gft.ActionQueue.Type = ImFileTreeActionType_Copy;
-
-        if(g.IO.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_X))
-            gft.ActionQueue.Type = ImFileTreeActionType_Cut;
 
         if(gft.ActionQueue.Type == ImFileTreeActionType_Rename)
         {
@@ -1034,9 +1048,6 @@ void ImFileTree::RenderFile(ImFileTreeFileDesc* file_desc)
             gft.InputLabelContext.OldPathIndex = file_desc->PathIndex;
             snprintf(gft.InputLabelContext.TextBuffer, IM_COUNTOF(gft.InputLabelContext.TextBuffer), file_name);
         }
-
-        if(ImGui::IsWindowFocused() && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_Space) || (is_double_click && ImGui::IsItemClicked(ImGuiMouseButton_Left))))
-            gft.ActionQueue.Type = ImFileTreeActionType_OpenFile;
     }
 
     bool apply_alpha_mul = (gft.ActionQueue.IsActionCut && gft.ActionQueue.Contains(file_desc->PathIndex));
@@ -1092,10 +1103,6 @@ void ImFileTree::RenderRoot(ImFileTreeDirEntry* root_dir_entry, float scan_dir_p
 //-----------------------------------------------------------------------------
 // [SECTION] Context Utils
 //-----------------------------------------------------------------------------
-
-#ifndef GImFileTree
-ImFileTreeContext* GImFileTree = nullptr;
-#endif
 
 ImFileTreeContext::ImFileTreeContext()
 {
@@ -1232,6 +1239,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
     if(gft.RootDirs.Size == 0)
         return;
 
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.0f, 2.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 10.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(6.0f, 6.0f)); // For popups
 
@@ -1627,7 +1635,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
 
     gft.UpdateDirContentAllow = false;
 
-    ImGui::PopStyleVar(2);
+    ImGui::PopStyleVar(3);
 }
 
 void ImFileTree::StyleIconColorsDefault()
