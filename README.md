@@ -1,4 +1,4 @@
-# About
+## About
 An implementation of file tree for [Dear ImGui](https://github.com/ocornut/imgui) with [Nerd Font](https://www.nerdfonts.com/) icons (glyphs) support.
 
 # Features
@@ -65,5 +65,5 @@ ImGui::End();
 ImGui::PopStyleVar();
 ```
 
-## License
+# License
 This work is licensed under the terms of the MIT license. For a copy, see <https://opensource.org/licenses/MIT>.

@@ -32,7 +32,7 @@ static int ImFileTreeRemoveDirRecursive(const char* path_name)
 {
     ImFileTreeContext& gft = *GImFileTree;
 
-    if(path_name == NULL || path_name[0] == '\0')
+    if(path_name == nullptr || path_name[0] == '\0')
         return -1;
 #ifdef _WIN32
     wchar_t path_name_w[PATH_MAX];
@@ -47,13 +47,13 @@ static int ImFileTreeRemoveDirRecursive(const char* path_name)
         return -1;
 #endif
     DIR* dir = fs_opendir(path_name);
-    if(!dir)
+    if(dir == nullptr)
         return -1;
 
     char sub_path[PATH_MAX];
 
     dirent* ent;
-    while((ent = fs_readdir(dir)) != NULL)
+    while((ent = fs_readdir(dir)) != nullptr)
     {
         if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
             continue;
@@ -273,7 +273,7 @@ void ImFileTree::UpdateActionQueue()
             ImFileTreeActionQueueEntry path;
             path.PathIndex = gft.Selections[i];
             path.PathName = gft.StringPool->at(gft.Selections[i]);
-            if(!path.PathName)
+            if(path.PathName == nullptr)
                 continue;
 
             paths.push_back(path);
@@ -317,7 +317,7 @@ void ImFileTree::UpdateActionQueue()
         ImFileTreeActionQueueEntry path;
         path.PathIndex = gft.Selections[0];
         path.PathName = gft.StringPool->at(gft.Selections[0]);
-        if(path.PathName)
+        if(path.PathName != nullptr)
             gft.ActionQueue.SrcPaths.push_back(path);
     }
     else if(gft.PopupMenuItemPathIndex != ImStringPool::INVALID_IDX)
@@ -325,7 +325,7 @@ void ImFileTree::UpdateActionQueue()
         ImFileTreeActionQueueEntry path;
         path.PathIndex = gft.PopupMenuItemPathIndex;
         path.PathName = gft.StringPool->at(gft.PopupMenuItemPathIndex);
-        if(path.PathName)
+        if(path.PathName != nullptr)
             gft.ActionQueue.SrcPaths.push_back(path);
     }
 }
@@ -334,7 +334,7 @@ void ImFileTree::UpdateDirContent(ImFileTreeDirEntry* dir_entry, const char* dir
 {
     ImFileTreeContext& gft = *GImFileTree;
 
-    if(!dir_path || dir_path[0] == '\0')
+    if(dir_path == nullptr || dir_path[0] == '\0')
         return;
 
     if(!fs_dir_exists(dir_path))
@@ -349,7 +349,7 @@ void ImFileTree::UpdateDirContent(ImFileTreeDirEntry* dir_entry, const char* dir
     }
 
     DIR* dir = fs_opendir(dir_path);
-    if(!dir)
+    if(dir == nullptr)
         return;
 
     dir_entry->Dirs.clear();
@@ -357,7 +357,7 @@ void ImFileTree::UpdateDirContent(ImFileTreeDirEntry* dir_entry, const char* dir
     dir_entry->ModTime = dir_mod_time;
 
     dirent* ent;
-    while((ent = fs_readdir(dir)) != NULL)
+    while((ent = fs_readdir(dir)) != nullptr)
     {
         const char* file_name = ent->d_name;
         if(strcmp(file_name, ".") == 0 || strcmp(file_name, "..") == 0)
@@ -387,7 +387,7 @@ void ImFileTree::UpdateDirContent(ImFileTreeDirEntry* dir_entry, const char* dir
             file_desc.NameIndex = name_idx;
             file_desc.PathIndex = path_idx;
             const char* file_name_ext = path_get_file_name_ext(file_name, true);
-            if(file_name_ext)
+            if(file_name_ext != nullptr)
                 file_desc.ExtensionIndex = gft.StringPool->insert(file_name_ext);
 
             if(!ImFileTreeIconMapGetIcon(gft.IconColorschemeByFilename, ICON_MAP_BY_FILENAME_SIZE_MAX, file_name, file_desc.Icon))
@@ -395,7 +395,7 @@ void ImFileTree::UpdateDirContent(ImFileTreeDirEntry* dir_entry, const char* dir
                 if(file_desc.ExtensionIndex != ImStringPool::INVALID_IDX)
                 {
                     const char* file_extension = gft.StringPool->at(file_desc.ExtensionIndex);
-                    if(file_extension)
+                    if(file_extension != nullptr)
                         ImFileTreeIconMapGetIcon(gft.IconColorschemeByFileExtension, ICON_MAP_BY_FILE_EXT_SIZE_MAX, file_extension, file_desc.Icon);
                 }
             }
@@ -435,7 +435,7 @@ bool ImFileTree::InputLabel(const char* label, int path_idx, bool special_select
             if(str_len)
             {
                 const char* dot_ptr = strrchr(gft.InputLabelContext.TextBuffer, '.');
-                if(!dot_ptr || dot_ptr == gft.InputLabelContext.TextBuffer)
+                if(dot_ptr == nullptr || dot_ptr == gft.InputLabelContext.TextBuffer)
                 {
                     gft.InputLabelContext.Selection.Start = 0;
                     gft.InputLabelContext.Selection.End = str_len;
@@ -472,7 +472,7 @@ bool ImFileTree::InputLabel(const char* label, int path_idx, bool special_select
     {
         const char* old_path = gft.StringPool->at(path_idx);
         char* old_dir_name = path_get_dir_name(old_path);
-        if(old_dir_name)
+        if(old_dir_name != nullptr)
         {
             if(label[0] != '\0' && gft.InputLabelContext.TextBuffer[0] != '\0' && strcmp(label, gft.InputLabelContext.TextBuffer) != 0)
             {
@@ -594,7 +594,7 @@ void ImFileTree::RenderDir(ImFileTreeDirEntry* dir_entry)
 
     const char* dir_name = gft.StringPool->at(dir_entry->NameIndex);
     const char* dir_path = gft.StringPool->at(dir_entry->PathIndex);
-    if(!dir_name || !dir_path)
+    if(dir_name == nullptr || dir_path == nullptr)
         return;
 
     // Mark the element as invalid for subsequent removal from the vector
@@ -728,7 +728,7 @@ void ImFileTree::RenderDir(ImFileTreeDirEntry* dir_entry)
         if(ImGui::BeginDragDropTarget())
         {
             const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ImFileTreeDragDrop");
-            if(payload && payload->DataSize)
+            if(payload != nullptr && payload->DataSize)
             {
                 const ImGuiPayload* payload = ImGui::GetDragDropPayload();
                 const int* payload_items = (int*)payload->Data;
@@ -904,7 +904,7 @@ void ImFileTree::RenderFile(ImFileTreeFileDesc* file_desc)
         return;
 
     const char* file_name = gft.StringPool->at(file_desc->NameIndex);
-    if(!file_name)
+    if(file_name == nullptr)
         return;
 
     // Mark the element as invalid for subsequent removal from the vector
@@ -1183,7 +1183,7 @@ void ImFileTree::AddRootPath(const char* root_path)
     char full_path_buf[PATH_MAX];
     char* full_path = realpath(root_path, full_path_buf);
 #endif
-    if(!full_path)
+    if(full_path == nullptr)
         return;
 
     int full_path_len = (int)strlen(full_path);
@@ -1218,18 +1218,19 @@ void ImFileTree::AddRootPath(const char* root_path)
     ImFileTreeDirEntry* new_root_dir = IM_NEW(ImFileTreeDirEntry);
 
     char* base_name = path_get_base_name(full_path);
+    if(base_name != nullptr)
+    {
+        new_root_dir->NameIndex = gft.StringPool->insert(base_name);
+        new_root_dir->PathIndex = gft.StringPool->insert(full_path);
+        new_root_dir->IsOpen = true;
+        new_root_dir->IsRoot = true;
 
-    new_root_dir->NameIndex = gft.StringPool->insert(base_name);
-    new_root_dir->PathIndex = gft.StringPool->insert(full_path);
-    new_root_dir->IsOpen = true;
-    new_root_dir->IsRoot = true;
-
-    if(base_name)
         IM_FREE(base_name);
 
-    UpdateDirContent(new_root_dir, full_path);
+        UpdateDirContent(new_root_dir, full_path);
 
-    gft.RootDirs.push_back(new_root_dir);
+        gft.RootDirs.push_back(new_root_dir);
+    }
 }
 
 void ImFileTree::Render(float scan_dir_period, bool sort_content)
@@ -1262,7 +1263,6 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
     if(window->ScrollMax.y == 0.0f)
     {
         ImGui::InvisibleButton("##RootEmptySpace", ImVec2(ImGui::GetContentRegionAvail().x + window->Scroll.x, ImGui::GetContentRegionAvail().y));
-        //ImGui::GetWindowDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(0, 255, 0, 255), 4.0f, ImDrawListFlags_None, 1.0f);
 
         if(ImGui::IsItemClicked(ImGuiMouseButton_Left))
         {
@@ -1290,7 +1290,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
         if(gft.ActionQueue.Type == ImFileTreeActionType_CreateDir)
         {
             const char* new_dir_path = gft.StringPool->at(gft.InputLabelContext.NewPathIndex);
-            if(new_dir_path)
+            if(new_dir_path != nullptr)
             {
                 if(!fs_path_exists(new_dir_path))
                     fs_dir_create(new_dir_path);
@@ -1299,7 +1299,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
         else if(gft.ActionQueue.Type == ImFileTreeActionType_CreateFile)
         {
             const char* new_file_path = gft.StringPool->at(gft.InputLabelContext.NewPathIndex);
-            if(new_file_path)
+            if(new_file_path != nullptr)
             {
                 if(!fs_path_exists(new_file_path))
                     fs_file_create(new_file_path);
@@ -1310,7 +1310,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
             const char* old_path = gft.StringPool->at(gft.InputLabelContext.OldPathIndex);
             const char* new_path = gft.StringPool->at(gft.InputLabelContext.NewPathIndex);
 
-            if(old_path && new_path)
+            if(old_path != nullptr && new_path != nullptr)
             {
                 fs_file_rename(old_path, new_path);
                 if(gft.FileRenameCallback)
@@ -1335,7 +1335,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
     else if(gft.ActionQueue.Type == ImFileTreeActionType_Paste)
     {
         const char* dst_path = gft.ActionQueue.DstPath;
-        if(dst_path)
+        if(dst_path != nullptr)
         {
             for(int i = 0; i < gft.ActionQueue.SrcPaths.size(); ++i)
             {
@@ -1363,7 +1363,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
                     if(gft.ActionQueue.IsActionCut)
                     {
                         char* src_path = path_get_dir_name(src_path_name);
-                        if(src_path)
+                        if(src_path != nullptr)
                         {
                             if(strcmp(src_path, dst_path) == 0)
                             {
@@ -1508,7 +1508,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
         else if(action_queue_paths_count == 1)
         {
             const char* src_base_name = path_get_base_name_no_alloc(gft.ActionQueue.SrcPaths[0].PathName);
-            if(src_base_name)
+            if(src_base_name != nullptr)
             {
                 if(gft.ActionQueue.IsActionDelete)
                     ImGui::TextWrapped(gft.ActionQueue.MessageFormat, src_base_name);
@@ -1539,7 +1539,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
             for(int i = 0; i < items_show_max; ++i)
             {
                 const char* base_name = path_get_base_name_no_alloc(gft.ActionQueue.SrcPaths[i].PathName);
-                if(base_name)
+                if(base_name != nullptr)
                     ImGui::TextWrapped(base_name);
             }
 

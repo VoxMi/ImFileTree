@@ -1450,7 +1450,7 @@ ImFileTreeIconColor icon_map_by_file_ext_nvim_web_devicons_light[ICON_MAP_BY_FIL
 
 bool ImFileTreeIconMapGetIcon(ImFileTreeIconColor* map, int map_size, const char* key, ImFileTreeIcon& icon)
 {
-    if(map && key)
+    if(map != nullptr && key != nullptr)
     {
         uint32_t key_hash = Hash::fnv1a_32(key);
 
