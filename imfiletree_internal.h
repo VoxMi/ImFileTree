@@ -192,6 +192,6 @@ namespace ImFileTree
 
     void RenderDir(ImFileTreeDirEntry* dir_entry);
     void RenderFile(ImFileTreeFileDesc* file_desc);
-    void RenderRoot(ImFileTreeDirEntry* root_dir_entry, float scan_dir_period, bool sort_content);
+    void RenderRoot(ImFileTreeDirEntry* root_dir_entry, float scan_dir_period);
 }
 #endif // #ifndef IMGUI_DISABLE

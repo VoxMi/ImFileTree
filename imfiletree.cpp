@@ -129,7 +129,7 @@ static void ImFileTreeSortAlphabetical(ImVector<T>& elements, ImStringPool* stri
         while(j >= 0)
         {
             const char* str2 = string_pool->at(elements[j].NameIndex);
-            if(str1 && str2 && ImStricmp(str1, str2) < 0)
+            if(str1 && str2 && ImStricmp(str1, str2) > 0)
             {
                 elements[j + 1] = elements[j];
                 j--;
@@ -1071,11 +1071,9 @@ void ImFileTree::RenderFile(ImFileTreeFileDesc* file_desc)
     ImGui::PopStyleVar();
 }
 
-void ImFileTree::RenderRoot(ImFileTreeDirEntry* root_dir_entry, float scan_dir_period, bool sort_content)
+void ImFileTree::RenderRoot(ImFileTreeDirEntry* root_dir_entry, float scan_dir_period)
 {
     ImFileTreeContext& gft = *GImFileTree;
-
-    gft.UpdateDirContentSort = sort_content;
 
     if(scan_dir_period < 1.0f)
         scan_dir_period = 1.0f;
@@ -1169,9 +1167,10 @@ void ImFileTree::Initialize(ImFileTreeContext* ctx)
 // [SECTION] End-user API Functions
 //-----------------------------------------------------------------------------
 
-void ImFileTree::AddRootPath(const char* root_path)
+void ImFileTree::AddRootPath(const char* root_path, bool sort_content)
 {
     ImFileTreeContext& gft = *GImFileTree;
+    gft.UpdateDirContentSort = sort_content;
 
     if(root_path == nullptr || root_path[0] == '\0')
         root_path = ROOT_PATH_DEFAULT;
@@ -1233,7 +1232,7 @@ void ImFileTree::AddRootPath(const char* root_path)
     }
 }
 
-void ImFileTree::Render(float scan_dir_period, bool sort_content)
+void ImFileTree::Render(float scan_dir_period)
 {
     ImFileTreeContext& gft = *GImFileTree;
 
@@ -1250,7 +1249,7 @@ void ImFileTree::Render(float scan_dir_period, bool sort_content)
         if(!root_dir || root_dir->PathIndex == ImStringPool::INVALID_IDX)
             continue;
 
-        RenderRoot(root_dir, scan_dir_period, sort_content);
+        RenderRoot(root_dir, scan_dir_period);
     }
 
     if(gft.LastItemFocused != ImStringPool::INVALID_IDX)

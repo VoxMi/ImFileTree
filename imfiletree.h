@@ -14,8 +14,8 @@ namespace ImFileTree
     ImFileTreeContext*  GetCurrentContext();
     void                SetCurrentContext(ImFileTreeContext* ctx);
 
-    void                AddRootPath(const char* root_path);
-    void                Render(float scan_dir_period = 1.0f, bool sort_content = false);
+    void                AddRootPath(const char* root_path, bool sort_content = false);
+    void                Render(float scan_dir_period = 1.0f);
 
     void                StyleIconColorsDefault();
     void                StyleIconColorsLight();
