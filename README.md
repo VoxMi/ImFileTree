@@ -13,6 +13,9 @@ An implementation of file tree for [Dear ImGui](https://github.com/ocornut/imgui
 - Drag-And-Drop feature
 - Colored icons for directories and file types
 
+<img width="320" height="600" alt="file_tree" src="https://github.com/user-attachments/assets/1220abf9-8b60-47ae-9b40-2cfeaa8ffbcc" />
+<img width="386" height="600" alt="rm_items" src="https://github.com/user-attachments/assets/a68b5b60-4f94-44ac-8ff5-128a2918c12f" />
+
 # Dependencies
 - Vanilla [Dear ImGui](https://github.com/ocornut/imgui) >= 1.92
 - [A Patched Nerd Font](https://www.nerdfonts.com/) >= 3.3
